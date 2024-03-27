@@ -1,0 +1,91 @@
+{% extends 'base.html' %} 
+{% block content %}
+<div class="message-box">
+  <h2>Chat Room: {{code}}</h2>
+  <div class="whiteboard">
+    <canvas id="whiteboardCanvas" width="800" height="600"></canvas>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="inputs">
+    <input
+      type="text"
+      rows="3"
+      placeholder="Message"
+      name="message"
+      id="message"
+    />
+    <button type="button" name="send" id="send-btn" onClick="sendMessage()">
+      Send
+    </button>
+  </div>
+</div>
+<script type="text/javascript">
+  var socketio = io();
+  var canvas = document.getElementById('whiteboardCanvas');
+  var context = canvas.getContext('2d');
+  var drawing = false;
+
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDrawing);
+
+  function startDrawing(e) {
+    drawing = true;
+    draw(e); // To start drawing from the initial click position
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+
+    context.lineWidth = 2;
+    context.lineCap = 'round';
+
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+
+    context.lineTo(x, y);
+    context.stroke();
+
+    // Emit the drawing data to other clients
+    socketio.emit('drawing', { x: x, y: y, room: '{{code}}' });
+  }
+
+  function stopDrawing() {
+    drawing = false;
+    context.beginPath(); // Start a new path for the next drawing
+  }
+
+  const messages = document.getElementById("messages");
+
+  const createMessage = (name, msg) => {
+    const content = `
+    <div class="text">
+        <span>
+            <strong>${name}</strong>: ${msg}
+        </span>
+        <span class="muted">
+            ${new Date().toLocaleString()}
+        </span>
+    </div>
+    `;
+    messages.innerHTML += content;
+  };
+
+  socketio.on("message", (data) => {
+    createMessage(data.name, data.message);
+  });
+
+  const sendMessage = () => {
+    const message = document.getElementById("message");
+    if (message.value == "") return;
+    socketio.emit("message", { data: message.value });
+    message.value = "";
+  };
+</script>
+{% for msg in messages %}
+<script type="text/javascript">
+  createMessage("{{msg.name}}", "{{msg.message}}");
+</script>
+{% endfor %} 
+{% endblock %}

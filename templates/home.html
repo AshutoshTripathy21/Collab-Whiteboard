@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>We Collab</title>
+    <!-- Include necessary CSS and stylesheets here  -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+        }
+
+
+        // function redirectToAnotherPage() {
+        //     window.location.href = "room.html";
+        // }
+
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+
+<body>
+    <main>
+        <div class="relative flex flex-col h-[100vh] items-center justify-center bg-white dark:bg-black transition-bg ">
+            <h1 class="text-4xl font-bold text-center text-black-100 ">Empowering virtual collaboration through integration</h1>
+                <div class="container">
+                    <p id="timeAndDate"></p>
+                </div>
+                <div class="dashboard-link">
+                    <a href="{{ url_for('dashboard') }}">Go to Dashboard</a>
+                </div>
+            <div class="flex flex-1 justify-center items-center flex-col py-10 float-left mt-10">
+                <!-- absolute inset-0 overflow-hidden  -->
+                <div class="create">
+                    <form method="post" class="buttons">
+                        <button type="submit" name="create" class="create-btn">
+                            <i class="fas fa-plus"></i> Create Room
+                          </button>
+                        {% if error %}
+                        <ul>
+                            <li>{{error}}</li>
+                        </ul>
+                        {% endif %}
+                    </form>
+                </div>
+                <div>
+                    <!-- Add the "Join a Room" form here -->
+                    <form method="post" class="buttons">
+                        <div class="join mt-10 pt-10">
+                            <input type="text" placeholder="Room Code" name="code" class="border border-gray-300 rounded-md p-2">
+
+
+                            <button type="submit" name="room" class="w-92 h-18 bg-blue-700 text-white font-bold rounded-md">Join Room</button>
+                        </div>
+                        {% if error_join %}
+                        <ul>
+                            <li>{{error_join}}</li>
+                        </ul>
+                        {% endif %}
+                    </form>
+                    <!-- End of "Join a Room" form -->
+                </div>
+                <div class="jumbo absolute -inset-[10px] opacity-50"></div>
+            </div>
+        </div>
+    </main>
+    <!-- partial -->
+    <script src="{{ url_for('static', filename='js/home_bg.js') }}"></script>
+</body>
+
+</html>

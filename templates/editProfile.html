@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            <label for="bio">Bio:</label>
+            <textarea id="bio" name="bio">{{ current_user.bio }}</textarea><br>
+    
+            <label for="profile_picture">Profile Picture:</label>
+            <input type="file" id="profile_picture" name="profile_picture"><br>
+    
+            <button type="submit">Update Profile</button>
+        </form>    
+    </div>
+</body>
+</html>

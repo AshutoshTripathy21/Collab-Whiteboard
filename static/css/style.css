@@ -1,0 +1,170 @@
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.join {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.create-btn {
+  width: 100%;
+}
+
+.message-box {
+  border-color: black;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 10px;
+  background-color: whitesmoke;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+  align-items: stretch;
+}
+
+.messages {
+  overflow-y: scroll;
+  flex: 1;
+  width: 100%;
+}
+
+.inputs {
+  padding: 10px;
+  display: flex;
+}
+
+h2 {
+  text-align: center;
+}
+
+#message {
+  flex: 1;
+}
+
+.text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.muted {
+  font-size: 10px;
+  color: darkgray;
+}
+
+.message-box {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 400px; 
+  height: 300px;
+  margin: 20px;
+  overflow-y: auto;
+  background: linear-gradient(-45deg, #033c4b, #AEC6CF);
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+} 
+
+#messages {
+  max-height: 525px;
+      max-width: 400px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#message {
+  width: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  animation: slideIn 0.5s ease-out;
+}
+
+#message:focus {
+  border-color: dodgerblue;
+  box-shadow: 0 0 5px rgba(30, 144, 255, 0.7);
+}
+
+#send-btn {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 8px 10px;
+  font-size: 16px;
+  background-color: black;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#send-btn:hover {
+  background-color: rgba(65, 105, 225, 0.475);
+}
+
+#meet{
+  position: absolute;
+  padding: 10px;
+  left: 0;
+  top: 0;
+  margin: 0;
+}
+
+.fileupload{
+  position: absolute;
+  top: 100px; 
+  left: 0;
+  width: 300px;
+  height: 100px;
+  overflow-y: auto;
+} 
+
+#container {
+  position: fixed;
+  top: 0;
+  left: 25%;
+  width:50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: black;
+  color: #fff;
+} 
+
+

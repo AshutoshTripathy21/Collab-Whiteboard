@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="message-box">
+  <h2>Chat Room: {{ code }}</h2>
+  <div class="messages" id="messages"></div>
+  <div class="whiteboard-container">
+    <canvas id="whiteboard" width="800" height="600"></canvas>
+  </div>
+  <div class="inputs">
+    <input type="text" rows="3" placeholder="Message" name="message" id="message"/>
+    <button type="button" name="send" id="send-btn" onclick="sendMessage()">Send</button>
+  </div>
+</div>
+<script type="text/javascript">
+  var socketio = io();
+  const messages = document.getElementById("messages");
+
+  const createMessage = (name, msg) => {
+    const content = `
+    <div class="text">
+        <span>
+            <strong>${name}</strong>: ${msg}
+        </span>
+        <span class="muted">
+            ${new Date().toLocaleString()}
+        </span>
+    </div>
+    `;
+    messages.innerHTML += content;
+  };
+
+  socketio.on("message", (data) => {
+    createMessage(data.name, data.message);
+  });
+
+  const sendMessage = () => {
+    const message = document.getElementById("message");
+    if (message.value == "") return;
+    socketio.emit("message", { data: message.value });
+    message.value = "";
+  };
+
+  // Whiteboard functionality
+  const canvas = document.getElementById('whiteboard');
+  const ctx = canvas.getContext('2d');
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDrawing);
+
+  function startDrawing(e) {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  }
+
+  function draw(e) {
+    if (!isDrawing) return;
+    const rect = canvas.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(offsetX, offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [offsetX, offsetY];
+    socketio.emit('drawing', { data: { startX: lastX, startY: lastY, endX: offsetX, endY: offsetY } });
+}
+
+  function stopDrawing() {
+    isDrawing = false;
+  }
+
+  socketio.on('drawing', (data) => {
+    const { startX, startY, endX, endY } = data.data;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  });
+</script>
+{% endblock %}

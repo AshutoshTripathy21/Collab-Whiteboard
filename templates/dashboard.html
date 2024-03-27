@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Include necessary CSS and stylesheets here -->
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            margin: 0;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+
+        .card {
+            width: 400px;
+            height:  450px;
+            padding: 20px;
+            background-color: black;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgb(255, 0, 64);
+            border-radius: 8px;
+            text-align: center;
+            margin-left: 15%;
+            font-size: 22px;
+        }
+
+        .top-right-buttons {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .top-right-buttons a {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .top-right-buttons a:hover {
+            background-color: #3e8e41;
+        }
+        .home{
+            top: 0;
+            left: 0;
+            position: absolute;
+            padding: 5px 10px;
+            margin-top: 5px;
+            margin-left: 5px;
+            display: flex;
+            align-items: center;
+            border: none;
+            border-radius: 5px;
+            background-color: #0084ff;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+        }
+        .home:hover{
+            background-color: #3c00ffe2;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <!-- Dashboard content -->
+        <div>
+            <h1>Welcome to Your Dashboard, {{ current_user.username }}</h1>
+            <div class="card">
+                {% if current_user.profile_picture %}
+                <img src="{{ url_for('uploaded_file', room=current_user.username, filename=current_user.profile_picture) }}"
+                    alt="Profile Picture">
+
+                {% endif %}
+                <p>Email: {{ current_user.email }}</p>
+                <p>Bio: {{ current_user.bio }}</p>
+                <p>Joined On: {{ current_user.joined_on }}</p>
+                <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+            </div>
+
+            <div class="top-right-buttons">
+                <a href="{{ url_for('logout') }}" style="color: cyan;">
+                    Logout</a><br>
+                <a href="{{ url_for('forgot_password') }}" style="color: cyan;">Reset Password</a>
+            </div>
+
+            <div class="home">
+                <a href="{{ url_for('home') }}" style="color: cyan;">Home <i class='fas fa-home'></i></a>
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

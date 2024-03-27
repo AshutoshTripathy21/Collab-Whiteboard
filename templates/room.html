@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 id="meet">Meet Room: {{ code }}</h2>
+
+<div class="message-box">
+  <div class="messages" id="messages"></div>
+  <div class="inputs">
+    <input type="text" rows="3" placeholder="Message" name="message" id="message" />
+    <button type="button" name="send" id="send-btn" onClick="sendMessage()">
+      Send
+    </button>
+  </div>
+  <div>
+    <input type="file" id="file-input" />
+    <button type="button" id="upload-btn">Upload</button>
+  </div>
+  <div id="uploaded-files">
+    {% for file in uploaded_files %}
+      <button id="download-button-{{ file }}" class="download-button" data-filename="{{ file }}" data-url="{{ url_for('uploaded_file', room=code, filename=file) }}">{{ file }}</button><br>
+    {% endfor %}
+  </div>
+</div>
+
+<canvas id="whiteboard" width="1200" height="600"></canvas>
+<div id="container">
+  <label>Color:</label>
+  <input type="color" id="colorPicker" value="#000000">
+  <div id="drawing-tools">
+    <label>Tool:</label>
+    <select id="tool-select">
+      <option value="pen">Pen</option>
+      <option value="pencil">Pencil</option>
+      <option value="eraser">Eraser</option>
+      <!-- Add more drawing tools as needed -->
+    </select>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/whiteboard.js') }}"></script>
+<script type="text/javascript">
+  var socketio = io();
+
+  const messages = document.getElementById("messages");
+
+  const createMessage = (name, msg) => {
+    const content = `
+    <div class="text">
+        <span>
+            <strong>${name}</strong>: ${msg}
+        </span>
+        <span class="muted">
+            ${new Date().toLocaleString()}
+        </span>
+    </div>
+    `;
+    messages.innerHTML += content;
+  };
+
+  socketio.on("message", (data) => {
+    createMessage(data.name, data.message);
+  });
+
+  const sendMessage = () => {
+    const message = document.getElementById("message");
+    if (message.value == "") return;
+    socketio.emit("message", { data: message.value });
+    message.value = "";
+  };
+
+  document.getElementById("upload-btn").addEventListener("click", () => {
+    const fileInput = document.getElementById("file-input");
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = () => {
+        const arrayBuffer = reader.result;
+        const filename = file.name;
+        const fileData = { filename, data: arrayBuffer };
+        socketio.emit("fileUpload", fileData);
+      };
+    }
+  });
+
+  socketio.on("fileUploaded", (data) => {
+    const uploadedFiles = document.getElementById("uploaded-files");
+    const filename = data.filename;
+    const fileLink = document.createElement("a");
+    fileLink.textContent = filename;
+    fileLink.download = filename;
+    fileLink.href = `{{ url_for('uploaded_file', room=code, filename=filename) }}`;
+    uploadedFiles.appendChild(fileLink);
+    uploadedFiles.appendChild(document.createElement("br"));
+  });
+</script>
+{% for msg in messages %}
+<script type="text/javascript">
+  createMessage("{{msg.name}}", "{{msg.message}}");
+</script>
+<script type="text/javascript">
+  document.querySelectorAll('.download-button').forEach((el) => {
+    el.addEventListener('click', () => {
+      const filename = el.dataset.filename;
+      const url = el.dataset.url;
+
+      fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': `attachment; filename="${filename}"`
+          }
+        })
+        .then((response) => {
+          return response.blob();
+        })
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+        });
+    });
+  });
+</script>
+{% endfor %}
+{% endblock %}
