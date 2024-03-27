@@ -22,7 +22,7 @@
   </div>
 </div>
 
-<canvas id="whiteboard" width="1200" height="600"></canvas>
+<canvas id="whiteboard" width="1500" height="800"></canvas>
 <div id="container">
   <label>Color:</label>
   <input type="color" id="colorPicker" value="#000000">
@@ -43,13 +43,14 @@
   const messages = document.getElementById("messages");
 
   const createMessage = (name, msg) => {
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const content = `
     <div class="text">
         <span>
             <strong>${name}</strong>: ${msg}
         </span>
         <span class="muted">
-            ${new Date().toLocaleString()}
+            ${currentTime}
         </span>
     </div>
     `;
