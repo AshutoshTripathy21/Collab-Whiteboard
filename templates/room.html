@@ -17,7 +17,8 @@
   </div>
   <div id="uploaded-files">
     {% for file in uploaded_files %}
-      <button id="download-button-{{ file }}" class="download-button" data-filename="{{ file }}" data-url="{{ url_for('uploaded_file', room=code, filename=file) }}">{{ file }}</button><br>
+    <button id="download-button-{{ file }}" class="download-button" data-filename="{{ file }}"
+      data-url="{{ url_for('uploaded_file', room=code, filename=file) }}">{{ file }}</button><br>
     {% endfor %}
   </div>
 </div>
@@ -32,8 +33,15 @@
       <option value="pen">Pen</option>
       <option value="pencil">Pencil</option>
       <option value="eraser">Eraser</option>
+      <option value="text">Text</option>
+      <option value="circle">Circle</option> <!-- Added Circle option -->
+      <option value="square">Square</option> <!-- Added Square option -->
       <!-- Add more drawing tools as needed -->
     </select>
+    <label>Thickness:</label>
+    <input type="range" id="thickness" min="1" max="20" value="2">
+    <button id="undoBtn">Undo</button>
+    <button id="redoBtn">Redo</button>
   </div>
 </div>
 <script src="{{ url_for('static', filename='js/whiteboard.js') }}"></script>
@@ -105,12 +113,12 @@
       const url = el.dataset.url;
 
       fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/octet-stream',
-            'Content-Disposition': `attachment; filename="${filename}"`
-          }
-        })
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'Content-Disposition': `attachment; filename="${filename}"`
+        }
+      })
         .then((response) => {
           return response.blob();
         })
