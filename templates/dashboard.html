@@ -1,111 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <!-- Include necessary CSS and stylesheets here -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
     <style>
-        html {
-            height: 100%;
+      html {
+        height: 100%;
+      }
+
+      * {
+        box-sizing: border-box;
+        padding: 0px;
+        margin: 0px;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        font-family: "Noto Sans", sans-serif;
+        background: #0f0c29;
+        background: -webkit-linear-gradient(
+          to right,
+          #24243e,
+          #302b63,
+          #0f0c29
+        );
+        background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+      }
+      section {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .circle-1 {
+        position: absolute;
+        top: 15%;
+        left: 30%;
+        background: #4776e6;
+        background: -webkit-linear-gradient(to right, #8e54e9, #4776e6);
+        background: linear-gradient(to right, #8e54e9, #4776e6);
+        height: 350px;
+        width: 350px;
+        border-radius: 50%;
+      }
+      .circle-2 {
+        position: absolute;
+        bottom: 5%;
+        right: 35%;
+        background: #bc4e9c;
+        /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #f80759, #bc4e9c);
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #f80759, #bc4e9c);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        height: 400px;
+        width: 400px;
+        border-radius: 50%;
+      }
+      .circle-3 {
+        position: absolute;
+        top: 30%;
+        right: 35%;
+        background-color: #ff3cac;
+        background: #ff9966;
+        background: -webkit-linear-gradient(to right, #ff5e62, #ff9966);
+        background: linear-gradient(to right, #ff5e62, #ff9966);
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+      }
+
+      .card {
+        height: 500px;
+        width: 450px;
+        border-radius: 20px;
+        /* other styles */
+        background: rgba(39, 39, 39, 0.1);
+        backdrop-filter: blur(60px);
+        /* fallback cross browser compatibility */
+        -webkit-backdrop-filter: blur(60px);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px;
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+      }
+
+      .card-title {
+        color: #0f0c29;
+        font-size: 24px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .card > a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+      }
+
+      .circle-1 {
+        animation: bounce 4s linear infinite;
+      }
+      .circle-2 {
+        animation: bounce 4s linear infinite 1s;
+      }
+      .circle-3 {
+        animation: bounce 4s linear infinite 2s;
+      }
+      @keyframes bounce {
+        0% {
+          transform: translateY(0px);
         }
 
-        body {
-            background-color: black;
-            color: white;
-            margin: 0;
-            height: 100vh;
-            align-items: center;
-            justify-content: center;
-            display: flex;
+        25% {
+          transform: translateY(10px);
         }
 
-        .card {
-            width: 400px;
-            height:  450px;
-            padding: 20px;
-            background-color: black;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid rgb(255, 0, 64);
-            border-radius: 8px;
-            text-align: center;
-            margin-left: 15%;
-            font-size: 22px;
+        50% {
+          transform: translateY(0px);
         }
 
-        .top-right-buttons {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 10px;
-            display: flex;
-            align-items: center;
+        75% {
+          transform: translateY(-10px);
         }
 
-        .top-right-buttons a {
-            margin-left: 10px;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
+        100% {
+          transform: translateY(0px);
         }
+      }
 
-        .top-right-buttons a:hover {
-            background-color: #3e8e41;
-        }
-        .home{
-            top: 0;
-            left: 0;
-            position: absolute;
-            padding: 5px 10px;
-            margin-top: 5px;
-            margin-left: 5px;
-            display: flex;
-            align-items: center;
-            border: none;
-            border-radius: 5px;
-            background-color: #0084ff;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
-            text-align: center;
-        }
-        .home:hover{
-            background-color: #3c00ffe2;
-        }
+      .top-right-buttons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .top-right-buttons a {
+        margin-left: 10px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #0f0c29;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .top-right-buttons a:hover {
+        background-color: #100b3e;
+      }
+      .home {
+        top: 0;
+        left: 0;
+        position: absolute;
+        padding: 5px 10px;
+        margin-top: 5px;
+        margin-left: 5px;
+        display: flex;
+        align-items: center;
+        border: none;
+        border-radius: 5px;
+        background-color: #0f0c29;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+        text-align: center;
+      }
+      .home:hover {
+        background-color: #100b3e;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <main>
-        <!-- Dashboard content -->
-        <div>
-            <h1>Welcome to Your Dashboard, {{ current_user.username }}</h1>
-            <div class="card">
-                {% if current_user.profile_picture %}
-                <img src="{{ url_for('uploaded_file', room=current_user.username, filename=current_user.profile_picture) }}"
-                    alt="Profile Picture">
+  <body>
+    <section>
+      <!-- Dashboard content -->
+      <div>
+        <div class="circle-1"></div>
+        <div class="circle-2"></div>
+        <div class="circle-3"></div>
+        <div class="card">
+          <h1 class="card-title">
+            Welcome to Your Dashboard, {{ current_user.username }}
+          </h1>
+          <br />
 
-                {% endif %}
-                <p>Email: {{ current_user.email }}</p>
-                <p>Bio: {{ current_user.bio }}</p>
-                <p>Joined On: {{ current_user.joined_on }}</p>
-                <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
-            </div>
+          {% if current_user.profile_picture %}
+          <img
+            src="{{ url_for('uploaded_file', room=current_user.username, filename=current_user.profile_picture) }}"
+            alt="Profile Picture"
+          />
 
-            <div class="top-right-buttons">
-                <a href="{{ url_for('logout') }}" style="color: cyan;">
-                    Logout</a><br>
-                <a href="{{ url_for('forgot_password') }}" style="color: cyan;">Reset Password</a>
-            </div>
-
-            <div class="home">
-                <a href="{{ url_for('home') }}" style="color: cyan;">Home <i class='fas fa-home'></i></a>
-            </div>
-
+          {% endif %}
+          <p>Email: {{ current_user.email }}</p>
+          <p>Bio: {{ current_user.bio }}</p>
+          <p>Joined On: {{ current_user.joined_on }}</p>
+          <a href="{{ url_for('edit_profile') }}"><img src="/static/edit.svg" width="36" height="36" alt="edit" class="invert-white"></a>
         </div>
-    </main>
-</body>
 
+        <div class="top-right-buttons">
+          <a href="{{ url_for('logout') }}" > <img src="/static/logout.svg" width="36" height="36" alt="edit" class="invert-white"></a
+          ><br />
+          <a href="{{ url_for('forgot_password') }}" 
+            >Reset Password</a
+          >
+        </div>
+
+        <div class="home">
+          <a href="{{ url_for('home') }}"
+            ><img src="/static/home.svg" width="36" height="36" alt="edit" class="invert-white"> 
+          </a>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

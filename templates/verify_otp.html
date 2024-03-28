@@ -1,25 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verify OTP</title>
-</head>
-<body>
-    <h2>Verify OTP</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form method="POST">
-        <label for="otp">Enter OTP:</label><br>
-        <input type="text" id="otp" name="otp" required><br><br>
-        <button type="submit">Verify OTP</button>
-    </form>
-</body>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+
+      // function redirectToAnotherPage() {
+      //     window.location.href = "room.html";
+      // }
+    </script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0px;
+        margin: 0px;
+        scroll-behavior: smooth;
+        font-family: "Noto Sans", sans-serif;
+      }
+      section {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        background: #808080;
+      }
+      .circle-1 {
+        position: absolute;
+        top: 15%;
+        left: 30%;
+        background: #1a1a1a; /* Fallback color for browsers that do not support gradients */
+        background: -webkit-linear-gradient(
+          to right,
+          #1a1a1a,
+          #000000
+        ); /* For Chrome, Safari, and Opera */
+        background: linear-gradient(
+          to right,
+          #1a1a1a,
+          #000000
+        ); /* Standard syntax */
+        height: 350px;
+        width: 350px;
+        border-radius: 50%;
+      }
+      .circle-2 {
+        position: absolute;
+        bottom: 5%;
+        right: 35%;
+        background: #1a1a1a; /* Fallback color for browsers that do not support gradients */
+        background: -webkit-linear-gradient(
+          to right,
+          #1a1a1a,
+          #000000
+        ); /* For Chrome, Safari, and Opera */
+        background: linear-gradient(
+          to right,
+          #1a1a1a,
+          #000000
+        ); /* Standard syntax */
+        height: 400px;
+        width: 400px;
+        border-radius: 50%;
+      }
+      .circle-3 {
+        position: absolute;
+        top: 25%;
+        right: 32%;
+        background-color: #ff3cac;
+        background: #1a1a1a; /* Fallback color for browsers that do not support gradients */
+        background: -webkit-linear-gradient(
+          to right,
+          #1a1a1a,
+          #000000
+        ); /* For Chrome, Safari, and Opera */
+        background: linear-gradient(
+          to right,
+          #1a1a1a,
+          #000000
+        ); /* Standard syntax */
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+      }
+      .card {
+        height: 450px;
+        width: 550px;
+        border-radius: 20px;
+        background: rgba(39, 39, 39, 0.1);
+        backdrop-filter: blur(60px);
+        /* fallback cross browser compatibility */
+        -webkit-backdrop-filter: blur(60px);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px;
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+      }
+      .card-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      .card-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-top: 45px;
+      }
+      .circle-1 {
+        animation: bounce 4s linear infinite;
+      }
+      .circle-2 {
+        animation: bounce 4s linear infinite 1s;
+      }
+      .circle-3 {
+        animation: bounce 4s linear infinite 2s;
+      }
+      @keyframes bounce {
+        0% {
+          transform: translateY(0px);
+        }
+
+        25% {
+          transform: translateY(10px);
+        }
+
+        50% {
+          transform: translateY(0px);
+        }
+
+        75% {
+          transform: translateY(-10px);
+        }
+
+        100% {
+          transform: translateY(0px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <div>
+        <div class="circle-1"></div>
+        <div class="circle-2"></div>
+        <div class="circle-3"></div>
+        <div class="card">
+          <h2 class="card-title">Verify OTP</h2>
+          {% with messages = get_flashed_messages() %} {% if messages %}
+          <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %} {% endwith %}
+          <div class="card-content">
+            <form method="POST">
+              <label for="otp">Enter OTP:</label><br />
+              <input
+                type="text"
+                id="otp"
+                name="otp"
+                class="border border-gray-300 rounded-md p-2 w-full bg-transparent"
+                required
+              /><br /><br />
+              <button
+                type="submit"
+                class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              >
+                Verify OTP
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>
