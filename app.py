@@ -11,6 +11,7 @@ from datetime import datetime
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt 
 from flask_mail import Mail, Message
+import base64
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'major_project_whiteboard'
@@ -50,7 +51,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     joined_on = db.Column(db.DateTime, default=datetime.utcnow)  # Added joined_on field
     bio = db.Column(db.Text)  # Added bio field
-    profile_picture = db.Column(db.String(255))
+    profile_picture = db.Column(db.LargeBinary)
 
 rooms = {}
 
@@ -136,40 +137,43 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', current_user=current_user)
+    # Retrieve the user's profile picture from the database
+    profile_picture_data = current_user.profile_picture
+
+    # Encode the profile picture data as base64
+    if profile_picture_data:
+        profile_picture_base64 = base64.b64encode(profile_picture_data).decode('utf-8')
+    else:
+        # Provide a default base64 encoded image if profile picture is not available
+        with open('static/default_profile_picture.png', 'rb') as f:
+            profile_picture_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+    return render_template('dashboard.html', current_user=current_user, profile_picture_base64=profile_picture_base64)
+
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     if request.method == 'POST':
-        # Handle form submission to update user profile
         bio = request.form.get('bio')
-        # Update user's bio
         current_user.bio = bio
 
         # Handle profile picture upload
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             if file and allowed_file(file.filename):
-                username_folder = os.path.join(app.config['UPLOAD_FOLDER'], current_user.username)
-                if not os.path.exists(username_folder):
-                    os.makedirs(username_folder)
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(username_folder, filename))
-                # Update user's profile picture URL
-                current_user.profile_picture = os.path.join(current_user.username, filename)
-        
+                # Encode the image as bytes and store it in the database
+                current_user.profile_picture = file.read()
+
         flash('Profile updated!')
-
-        # Commit changes to the database
         db.session.commit()
-
-        return redirect(url_for('dashboard'))  # Redirect to dashboard after profile update
+        return redirect(url_for('dashboard'))
 
     return render_template('editProfile.html', current_user=current_user)
+
 
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -242,7 +246,7 @@ def create_room():
             #return render_template("create_room.html", error="Please enter a name.", code=code, name=name)
 
         if join != False and not code:
-            return render_template("create_room.html", error="Please enter a room code.", code=code, name=name)
+            return render_template("home.html", error="Please enter a room code.", code=code, name=name)
 
         room = code
         if create != False:
@@ -250,7 +254,7 @@ def create_room():
             rooms[room] = {"members": 0, "messages": [], "creator": name}
 
         elif code not in rooms:
-            return render_template("create_room.html", error="Room does not exist.", code=code, name=name)
+            return render_template("home.html", error="Room does not exist.", code=code, name=name)
 
         session["room"] = room
         session["name"] = name
@@ -258,7 +262,7 @@ def create_room():
     if not current_user.is_authenticated:
         # User is not logged in, redirect to login page with 'next' parameter
         return redirect(url_for('login', next=url_for('create_room')))
-    return render_template("create_room.html")
+    return render_template("home.html")
 
 @app.route("/room")
 @login_required
@@ -329,18 +333,23 @@ def connect(auth):
 def disconnect():
     room = session.get("room")
     name = session.get("name")
-    leave_room(room)
-    send({"name": name, "message": "has left the room"}, to=room)
-    print(f"{name} has left the room {room}")
+    if not room or not name:
+        return
+
     if room in rooms:
+        leave_room(room)  # Use Flask-SocketIO's leave_room() function
+        send({"name": name, "message": "has left the room"}, to=room)
         rooms[room]["members"] -= 1
+
         if name == rooms[room]["creator"]:
-            # If the creator is leaving but there are still members, update creator info
-            rooms[room]["creator"] = next(iter(rooms[room]["members"]))
-        if rooms[room]["members"] == 1:
-            pass
-        if rooms[room]["members"] <= 0:
+            # If the creator is leaving, emit a message to all clients in the room to leave
+            emit("leave_room", room=room, broadcast=True, include_self=False)
             del rooms[room]
+        else:
+            # If other members are leaving
+            if rooms[room]["members"] <= 0:
+                del rooms[room]
+
 
 @socketio.on("drawing")
 def handle_drawing(data):
@@ -360,6 +369,32 @@ def uploaded_file(room, filename):
         return send_from_directory(group_folder, filename, as_attachment=True)
     else:
         abort(404)
+
+@app.route('/leave_room')
+@login_required
+def leave_room():
+    room = session.get("room")
+    name = session.get("name")
+    if not room or not name:
+        return redirect(url_for("home"))  # Redirect to home if not in a room or not authenticated
+
+    if room in rooms:
+        if name == rooms[room]["creator"]:
+            # If the creator leaves, delete the room and redirect to home
+            del rooms[room]
+            flash("You've left the room and the room has been deleted.")
+            return redirect(url_for("home"))
+        else:
+            # If other users leave, reduce member count and redirect to home
+            leave_room(room)
+            send({"name": name, "message": "has left the room"}, to=room)
+            rooms[room]["members"] -= 1
+            flash("You've left the room.")
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))  # Redirect to home if room doesn't exist
+
+
 # ... (other code)
 
 @app.cli.command("initdb")

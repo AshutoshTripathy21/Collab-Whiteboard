@@ -21,6 +21,11 @@
       data-url="{{ url_for('uploaded_file', room=code, filename=file) }}">{{ file }}</button><br>
     {% endfor %}
   </div>
+  <!-- Add this button in your room.html template -->
+<form action="{{ url_for('leave_room') }}" method="get">
+  <button type="submit">Leave Room</button>
+</form>
+
 </div>
 
 <canvas id="whiteboard" width="1500" height="800"></canvas>
@@ -101,6 +106,10 @@
     uploadedFiles.appendChild(fileLink);
     uploadedFiles.appendChild(document.createElement("br"));
   });
+
+  socketio.on("leave_room", () => {
+    window.location.href = "/";  // Redirect to home page
+});
 </script>
 {% for msg in messages %}
 <script type="text/javascript">
