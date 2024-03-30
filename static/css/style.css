@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .content {
   display: flex;
   align-items: center;
@@ -166,4 +170,34 @@ h2 {
   padding: 10px;
   background-color: black;
   color: #fff;
+}
+
+.file-input {
+  display: none; /* Hide the file input */
+}
+
+/* Styles for the upload button */
+.upload-btn {
+  background-color: #1174ff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* Styles for the file upload container */
+.file-upload {
+  display: flex;
+  align-items: center;
+}
+
+.top-right-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  display: flex;
+  align-items: center;
 }
