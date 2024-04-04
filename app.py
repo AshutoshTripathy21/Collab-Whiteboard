@@ -372,7 +372,7 @@ def uploaded_file(room, filename):
 
 @app.route('/leave_room')
 @login_required
-def leave_room():
+def leave_room_route():
     room = session.get("room")
     name = session.get("name")
     if not room or not name:
@@ -382,18 +382,28 @@ def leave_room():
         if name == rooms[room]["creator"]:
             # If the creator leaves, delete the room and redirect to home
             del rooms[room]
-            flash("You've left the room and the room has been deleted.")
+            #flash("You've left the room and the room has been deleted.")
             return redirect(url_for("home"))
         else:
             # If other users leave, reduce member count and redirect to home
-            leave_room(room)
-            send({"name": name, "message": "has left the room"}, to=room)
+            #leave_room(room)
+            #send({"name": name, "message": "has left the room"}, to=room)
             rooms[room]["members"] -= 1
-            flash("You've left the room.")
-            return redirect(url_for("home"))
-    else:
-        return redirect(url_for("home"))  # Redirect to home if room doesn't exist
+            if rooms[room]["members"] <= 0:
+                del rooms[room]
+    session.pop("room")
+    session.pop("name")
+    return redirect(url_for('home'))
 
+@socketio.on("leave_room")
+def leave_room_event():
+    room = session.get("room")
+    name = session.get("name")
+    if not room or not name:
+        return
+
+    leave_room(room)
+    send({"name": name, "message": "has left the room"}, to=room)
 
 # ... (other code)
 

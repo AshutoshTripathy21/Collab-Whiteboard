@@ -1,230 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>WhiteBoard | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+
+      // function redirectToAnotherPage() {
+      //     window.location.href = "room.html";
+      // }
+    </script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
     <style>
-        html {
-            height: 100%;
+      html {
+        height: 100%;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Nunito", sans-serif;
+      }
+
+      body {
+        background: #1f1f47;
+      }
+
+      .container {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card {
+        width: 450px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        z-index: 10;
+        color: whitesmoke;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .btn {
+        background: none;
+        border: none;
+        text-align: center;
+        font-size: 1rem;
+        color: whitesmoke;
+        background-color: #fa709a;
+        padding: 0.8rem 1.8rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        margin-top: 10px;
+        margin-left: 120px;
+      }
+
+      .blob {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: linear-gradient(
+          180deg,
+          rgba(47, 184, 255, 0.42) 31.77%,
+          #5c9df1 100%
+        );
+        mix-blend-mode: color-dodge;
+        -webkit-animation: move 25s infinite alternate;
+        animation: move 25s infinite alternate;
+        transition: 1s cubic-bezier(0.07, 0.8, 0.16, 1);
+      }
+
+      .blob:hover {
+        width: 520px;
+        height: 520px;
+        -webkit-filter: blur(30px);
+        filter: blur(30px);
+        box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.6),
+          inset 100px 100px 0 0px #fa709a, inset 200px 200px 0 0px #784ba8,
+          inset 300px 300px 0 0px #2b86c5;
+      }
+
+      @-webkit-keyframes move {
+        from {
+          transform: translate(-100px, -50px) rotate(-90deg);
+          border-radius: 24% 76% 35% 65% / 27% 36% 64% 73%;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background: linear-gradient(#141e30, #243b55);
+        to {
+          transform: translate(500px, 100px) rotate(-10deg);
+          border-radius: 76% 24% 33% 67% / 68% 55% 45% 32%;
+        }
+      }
+
+      @keyframes move {
+        from {
+          transform: translate(-100px, -50px) rotate(-90deg);
+          border-radius: 24% 76% 35% 65% / 27% 36% 64% 73%;
         }
 
-        .reg{
-            color: azure;
+        to {
+          transform: translate(500px, 100px) rotate(-10deg);
+          border-radius: 76% 24% 33% 67% / 68% 55% 45% 32%;
         }
-
-        .login-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 400px;
-            padding: 40px;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, .5);
-            box-sizing: border-box;
-            box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
-            border-radius: 10px;
-        }
-
-        .login-box h2 {
-            margin: 0 0 30px;
-            padding: 0;
-            color: #fff;
-            text-align: center;
-        }
-
-        .login-box .user-box {
-            position: relative;
-        }
-
-        .login-box .user-box input {
-            width: 100%;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 30px;
-            border: none;
-            border-bottom: 1px solid #fff;
-            outline: none;
-            background: transparent;
-        }
-
-        .login-box .user-box label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #fff;
-            pointer-events: none;
-            transition: .5s;
-        }
-
-        .login-box .user-box input:focus~label,
-        .login-box .user-box input:valid~label {
-            top: -20px;
-            left: 0;
-            color: #03e9f4;
-            font-size: 12px;
-        }
-
-        .login-box form a {
-            position: relative;
-            display: inline-block;
-            padding: 10px 20px;
-            color: #03e9f4;
-            font-size: 16px;
-            text-decoration: none;
-            text-transform: uppercase;
-            overflow: hidden;
-            transition: .5s;
-            margin-top: 40px;
-            letter-spacing: 4px
-        }
-
-        .login-box a:hover {
-            background: #03e9f4;
-            color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 5px #03e9f4,
-                0 0 25px #03e9f4,
-                0 0 50px #03e9f4,
-                0 0 100px #03e9f4;
-        }
-
-        .login-box a span {
-            position: absolute;
-            display: block;
-        }
-
-        .login-box a span:nth-child(1) {
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #03e9f4);
-            animation: btn-anim1 1s linear infinite;
-        }
-
-        @keyframes btn-anim1 {
-            0% {
-                left: -100%;
-            }
-
-            50%,
-            100% {
-                left: 100%;
-            }
-        }
-
-        .login-box a span:nth-child(2) {
-            top: -100%;
-            right: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, transparent, #03e9f4);
-            animation: btn-anim2 1s linear infinite;
-            animation-delay: .25s
-        }
-
-        @keyframes btn-anim2 {
-            0% {
-                top: -100%;
-            }
-
-            50%,
-            100% {
-                top: 100%;
-            }
-        }
-
-        .login-box a span:nth-child(3) {
-            bottom: 0;
-            right: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(270deg, transparent, #03e9f4);
-            animation: btn-anim3 1s linear infinite;
-            animation-delay: .5s
-        }
-
-        @keyframes btn-anim3 {
-            0% {
-                right: -100%;
-            }
-
-            50%,
-            100% {
-                right: 100%;
-            }
-        }
-
-        .login-box a span:nth-child(4) {
-            bottom: -100%;
-            left: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(360deg, transparent, #03e9f4);
-            animation: btn-anim4 1s linear infinite;
-            animation-delay: .75s
-        }
-
-        @keyframes btn-anim4 {
-            0% {
-                bottom: -100%;
-            }
-
-            50%,
-            100% {
-                bottom: 100%;
-            }
-        }
-
-        button {
-
-            background: transparent;
-            border: none !important;
-            color: #16a3b9;
-        }
-
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div class="login-box">
+  <body>
+    <nav>
+        <p class="sitename">GroupGraffiti</p>
+        <svg
+          class="material-icons"
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 0 24 24"
+          width="24px"
+        >
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M19 9H5c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zM5 15h14c.55 0 1-.45 1-1s-.45-1-1-1H5c-.55 0-1 .45-1 1s.45 1 1 1z"
+          />
+        </svg>
+      </nav>
 
-        <h2>Login</h2>
+    <div class="container">
+      <div class="card">
+        <h1 class="text-3xl font-bold mb-4 ml-40">Login</h1>
+
         {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p style="color: red">{{ error }}</p>
         {% endif %}
+
         <form method="POST" action="/login">
-            <div class="user-box">
-                <input type="text" id="username" name="username" required="">
-                <label for="username">Username</label>
-            </div>>
+          <div class="user-box mb-10 mt-10">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="border border-gray-300 rounded-md p-2 w-full bg-transparent"
+              required
+            />
+          </div>
 
-            <div class="user-box">
-                <input type="password" name="password" required="">
-                <label for="password">Password</label>
-            </div>
-            <a href="{{ url_for('login') }}"><button type="submit" value="Login">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                LOGIN</button></a>
-
-                
+          <div class="user-box mb-10 mt-10">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="border border-gray-300 rounded-md p-2 w-full bg-transparent"
+              required
+            />
+          </div>
+          <a href="{{ url_for('login') }}"
+            ><button type="submit" value="Login" class="btn">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              LOGIN
+            </button></a
+          >
         </form>
-        <p style="color: whitesmoke;">Don't have an account ? <a href="{{ url_for('register') }}" style="color: cyan;">Register</a></p>
-        <p style="color: whitesmoke;">Forgot password ? <a href="{{ url_for('forgot_password') }}" style="color: cyan;">Reset Password</a></p>
-    </div>
-</body>
 
+        <div class="mt-40">
+            <p style="color: whitesmoke">
+                Don't have an account ?
+                <a href="{{ url_for('register') }}" style="color: cyan">Register</a>
+              </p>
+              <p style="color: whitesmoke">
+                Forgot password ?
+                <a href="{{ url_for('forgot_password') }}" style="color: cyan"
+                  >Reset Password</a
+                >
+              </p>
+        </div>
+
+      </div>
+      <div class="blob"></div>
+    </div>
+  </body>
 </html>
