@@ -24,3 +24,13 @@ SQLAlchemy==2.0.25
 typing_extensions==4.9.0
 Werkzeug==3.0.1
 wsproto==1.2.0
+
+"""
+In terminal write all these copmmands
+step 1: python -m venv venv    #to create virtual environment
+step 2: venv/Scripts/activate  #to activate virtual env
+step 3: pip install flask flask-login flask-socketio flask-sqlalchemy flask-migrate flask-bcrypt flask-mail   #to install all required libraries
+step 4: write code
+step 5: flask initdb    #to initialize database
+step 6: to run the application in CLI write: python -m flask run
+"""
